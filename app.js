@@ -1,24 +1,30 @@
-const express = require('express')
-const app = express()
-const port = 3001
- 
-app.get('/', (req, res) => {
-    res.send('Hello world!')
-})
+const express = require("express");
+const app = express();
+const host = "localhost"; // alamat server
+const port = 3001; // alamat port
 
-app.get('/about', (req, res) => {
-    res.send('this is about page!')
-})
+app.get("/", (req, res) => {
+  res.sendFile("./index.html", { root: __dirname });
+});
 
-app.get('/contact', (req, res) => {
-    res.send('this is about contact!')
-})
+app.get("/about", (req, res) => {
+  res.sendFile("./about.html", { root: __dirname });
+});
 
-app.use('/', (req, res) => {
-    res.status(404)
-    res.send('page not found : 404')
-})
+app.get("/contact", (req, res) => {
+  res.sendFile("./contact.html", { root: __dirname });
+});
 
-app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-})
+app.get('/product/:id', (req,res)=>{
+  res.send('product id : '+ req.params.id +' kategori id : '+ req.query.idCat)
+});
+
+app.use("/", (req, res) => {
+  res.status(404);
+  res.send("<h1>Not Found</h1>");
+});
+
+// Run server
+app.listen(port, host, () => {
+  console.log(`Server running at http://${host}:${port}`);
+});
