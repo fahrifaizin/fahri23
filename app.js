@@ -1,30 +1,37 @@
 const express = require("express");
 const app = express();
-const host = "localhost"; // alamat server
+const contacts = require("./contacts.json");
+
+// alamat host dan port
+const host = "localhost"; // alamat host
 const port = 3001; // alamat port
 
+app.set("view engine", "ejs");
+
 app.get("/", (req, res) => {
-  res.sendFile("./index.html", { root: __dirname });
+  res.render("index", { namaWeb: "Welcome To The World", title: "Welcome To the World" });
 });
 
+// permintaan GET ke about
 app.get("/about", (req, res) => {
-  res.sendFile("./about.html", { root: __dirname });
+  res.render("about", { title: "Welcome To The world - About" });
 });
 
+// permintaan GET contact
 app.get("/contact", (req, res) => {
-  res.sendFile("./contact.html", { root: __dirname });
+  res.render("contact", {
+    title: "Welcome To the world - Contact",
+    contact: contacts,
+  });
 });
 
-app.get('/product/:id', (req,res)=>{
-  res.send('product id : '+ req.params.id +' kategori id : '+ req.query.idCat)
-});
-
+// menangani permintaan yang tidak sesuai 
 app.use("/", (req, res) => {
   res.status(404);
   res.send("<h1>Not Found</h1>");
 });
 
-// Run server
+// Menjalankan server Express pada host dan port yang ditentukan
 app.listen(port, host, () => {
   console.log(`Server running at http://${host}:${port}`);
 });
