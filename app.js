@@ -17,12 +17,31 @@ app.get("/about", (req, res) => {
   res.render("about", { title: "Welcome To The world - About" });
 });
 
-// permintaan GET contact
+// permintaan GET contact dan mengirimkan file contact.html
 app.get("/contact", (req, res) => {
-  res.render("contact", {
-    title: "Welcome To the world - Contact",
-    contact: contacts,
-  });
+  const contacts = [
+   { nama: "Moh Fahri Faizin", mobile: "081389976935" },
+   { nama: "Giovani Batara", mobile: "081233332222" },
+   { nama: "Andre Alpian", mobile: "081344445555" },
+   { nama: "Alex", mobile: "081266667777" },
+   { nama: "Kafka Adib Al Malihi", mobile: "081322228888" },
+   { nama: "Fayadh", mobile: "081266668888" },
+];
+
+  if (contacts.length === 0) {
+    // Menampilkan Tidak Tersedia
+    res.render("contact", {
+      title: "Welcome To The World - Contact",
+      contacts,
+      isEmpty: true, // Variabel untuk menunjukan bahwa tidak tersedia
+    });
+  } else {
+    res.render("contact", {
+      title: "Welcome To The World - Contact",
+      contacts,
+      isEmpty: false, // Vaiabel untuk menunjukan bahwa tidak tersedia
+    });
+  }
 });
 
 // menangani permintaan yang tidak sesuai 

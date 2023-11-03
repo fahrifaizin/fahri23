@@ -49,12 +49,20 @@
     </h1>
     <br />
 
-    <ul>
-      <% contact.forEach(cnt => { %>
-      <li><h4>Nama: <%= cnt.nama %></h4></li>
-      <li><h4>Nomor HP: <%= cnt.mobile %></h4></li>
-      <br />
-      <% }) %>
-    </ul>
-  </body>
-</html>
+    <% if (isEmpty) { %>
+      <h5
+        class="container mx-auto px-4 lg:max-w-7xl py-24 text-center md:text-left"
+      >
+        Contact Tidak Tersedia!!
+      </h5>
+      <% } else { %>
+      <ul>
+        <% contacts.forEach(contact => { %>
+        <li><h6>Nama: <%= contact.nama %></h6></li>
+        <li><h6>Nomor HP: <%= contact.mobile %></h6></li>
+        <br />
+        <% }); %>
+      </ul>
+      <% } %>
+    </body>
+  </html>
