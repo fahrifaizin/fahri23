@@ -1,20 +1,31 @@
 const express = require("express");
 const app = express();
-const contacts = require("./contacts.json");
+const expressLayouts = require("express-ejs-layouts");
 
 // alamat host dan port
 const host = "localhost"; // alamat host
 const port = 3001; // alamat port
 
+// Mengatur view engine menggunakan EJS
 app.set("view engine", "ejs");
 
+// Menggunakan modul express-ejs-layouts
+app.use(expressLayouts);
+
 app.get("/", (req, res) => {
-  res.render("index", { namaWeb: "Welcome To The World", title: "Welcome To the World" });
+  res.render("index", {
+    nama_Web: "Welcome To The World",
+    title: "Welcome To The World",
+    layout: "layout/core-layout",
+  });
 });
 
-// permintaan GET ke about
+// Handle permintaan GET ke about
 app.get("/about", (req, res) => {
-  res.render("about", { title: "Welcome To The world - About" });
+  res.render("about", {
+    title: "Welcome To The World - About",
+    layout: "layout/core-layout",
+  });
 });
 
 // permintaan GET contact dan mengirimkan file contact.html
@@ -27,16 +38,19 @@ app.get("/contact", (req, res) => {
    { nama: "Kafka Adib Al Malihi", mobile: "081322228888" },
    { nama: "Fayadh", mobile: "081266668888" },
 ];
-
   if (contacts.length === 0) {
     // Menampilkan Tidak Tersedia
     res.render("contact", {
+      nama_Web: "Welcome To The World",
+      layout: "layout/core-layout",
       title: "Welcome To The World - Contact",
       contacts,
       isEmpty: true, // Variabel untuk menunjukan bahwa tidak tersedia
     });
   } else {
     res.render("contact", {
+      nama_Web: "Welcome To The World",
+      layout: "layout/core-layout",
       title: "Welcome To The World - Contact",
       contacts,
       isEmpty: false, // Vaiabel untuk menunjukan bahwa tidak tersedia
@@ -44,7 +58,12 @@ app.get("/contact", (req, res) => {
   }
 });
 
-// menangani permintaan yang tidak sesuai 
+// menangani permintaan ke get halaman 
+app.get("/product/:id", (req, res) => {
+  res.send(`Product ID: ${req.params.id} <br> Category: ${req.query.category}`);
+});
+
+// Middleware untuk menangani permintaan yang tidak sesuai 
 app.use("/", (req, res) => {
   res.status(404);
   res.send("<h1>Not Found</h1>");
