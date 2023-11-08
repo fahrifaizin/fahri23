@@ -6,6 +6,9 @@ const expressLayouts = require("express-ejs-layouts");
 const host = "localhost"; // alamat host
 const port = 3001; // alamat port
 
+// Menyajikan file gambar dari direktori "public"
+app.use(express.static('public'));
+
 // Mengatur view engine menggunakan EJS
 app.set("view engine", "ejs");
 
@@ -22,10 +25,12 @@ app.get("/", (req, res) => {
 
 // Handle permintaan GET ke about
 app.get("/about", (req, res) => {
-  res.render("about", {
-    title: "Welcome To The World - About",
+  res.render("about", { 
+     nama_Web: "Welcome To The World",
+    title: "Welcome To The World",
     layout: "layout/core-layout",
-  });
+    imageSrc: "img/selfie.jpeg"
+   });
 });
 
 // permintaan GET contact dan mengirimkan file contact.html
@@ -72,4 +77,4 @@ app.use("/", (req, res) => {
 // Menjalankan server Express pada host dan port yang ditentukan
 app.listen(port, host, () => {
   console.log(`Server running at http://${host}:${port}`);
-});
+})
