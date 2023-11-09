@@ -1,6 +1,7 @@
 const express = require("express");
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
+const { fetchContact } = require("./utility/contacts.js");
 
 // alamat host dan port
 const host = "localhost"; // alamat host
@@ -14,6 +15,13 @@ app.set("view engine", "ejs");
 
 // Menggunakan modul express-ejs-layouts
 app.use(expressLayouts);
+
+// // application level middleware
+// app.use((req, res, next) => {
+//   console.log("Time: ", Date.now());
+//   next();
+// });
+
 
 app.get("/", (req, res) => {
   res.render("index", {
@@ -35,14 +43,17 @@ app.get("/about", (req, res) => {
 
 // permintaan GET contact dan mengirimkan file contact.html
 app.get("/contact", (req, res) => {
-  const contacts = [
-   { nama: "Moh Fahri Faizin", mobile: "081389976935" },
-   { nama: "Giovani Batara", mobile: "081233332222" },
-   { nama: "Andre Alpian", mobile: "081344445555" },
-   { nama: "Alex", mobile: "081266667777" },
-   { nama: "Kafka Adib Al Malihi", mobile: "081322228888" },
-   { nama: "Fayadh", mobile: "081266668888" },
-];
+   const contacts = fetchContact();
+  // data contact static
+   //const contacts = [
+  //{ "nama": "Moh Fahri Faizin", "email": "fahri@gmail.com" },
+  //{ "nama": "Giovani Batara", "email": "giovani@gmail.com" },
+  //{ "nama": "Andre", "email": "andre01@gmail.com" },
+  //{ "nama": "Alex", "email": "alex@gmail.com" },
+  //{ "nama": "Kafka", "email": "kafka@gmail.com" },
+  //{ "nama": "Fayadh", "email": "fayadh@gmail.com" }
+  //];
+
   if (contacts.length === 0) {
     // Menampilkan Tidak Tersedia
     res.render("contact", {
