@@ -1,7 +1,7 @@
 const express = require("express");
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
-const { fetchContact, searchContact } = require("./utility/contacts.js");
+const { addContact, fetchContact, searchContact,  } = require("./utility/contacts.js");
 const host = "localhost";
 const port = 3001;
 
@@ -10,6 +10,7 @@ app.set("view engine", "ejs");
 app.use(expressLayouts);
 
 app.use(express.static("public"));
+app.use(express.urlencoded({ extended: false }));
 
 app.get("/", (req, res) => {
   res.render("index", {
@@ -29,7 +30,7 @@ app.get("/about", (req, res) => {
 
 app.get("/contact", (req, res) => {
   const contacts = fetchContact();
-
+  
   if (contacts.length === 0) {
     res.render("contact", {
       title: "Welcome To The World - Contact",
@@ -45,6 +46,18 @@ app.get("/contact", (req, res) => {
       layout: "layout/core-layout.ejs",
     });
   }
+});
+
+app.get("/contact/add", (req, res) => {
+  res.render("add-contact", {
+    title: "Welcome To The World - Add Contact",
+    layout: "layout/core-layout.ejs",
+  });
+});
+
+app.post("/contact", (req, res) => {
+  addContact(req.body);
+  res.redirect("/contact");
 });
 
 app.get("/contact/:nama", (req, res) => {
