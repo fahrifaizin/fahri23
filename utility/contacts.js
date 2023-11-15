@@ -33,4 +33,9 @@ const addContact = (contact) => {
   saveContacts(contacts);
 };
 
-module.exports = { addContact, fetchContact, searchContact };
+const duplicateCheck = (nama) => {
+  const contacts = fetchContact();
+  return contacts.find((contact) => contact.nama === nama);
+};
+
+module.exports = { addContact, fetchContact, searchContact, duplicateCheck }; 

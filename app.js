@@ -1,16 +1,17 @@
 const express = require("express");
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
-const { addContact, fetchContact, searchContact,  } = require("./utility/contacts.js");
+const { addContact, fetchContact, searchContact, duplicateCheck,  } = require("./utility/contacts.js");
+const { body, validationResult } = require("express-validator");
 const host = "localhost";
 const port = 3001;
 
 app.set("view engine", "ejs");
 
 app.use(expressLayouts);
-
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
+
 
 app.get("/", (req, res) => {
   res.render("index", {
@@ -55,10 +56,31 @@ app.get("/contact/add", (req, res) => {
   });
 });
 
-app.post("/contact", (req, res) => {
-  addContact(req.body);
-  res.redirect("/contact");
-});
+app.post(
+  "/contact",
+  [
+    body("nama").custom((value) => {
+      const duplicate = duplicateCheck(value);
+      if (duplicate) {
+        throw new Error("Nama Sudah Di Gunakan");
+      }
+      return true;
+    }),
+  ],
+  (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      res.render("add-contact", {
+        title: "Welcome To The - Add Contact",
+        layout: "layout/core-layout.ejs",
+        errors: errors.array(),
+      });
+    } else {
+      addContact(req.body);
+      res.redirect("/contact");
+    }
+  }
+);
 
 app.get("/contact/:nama", (req, res) => {
   const contact = searchContact(req.params.nama);
