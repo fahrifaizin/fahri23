@@ -1,17 +1,30 @@
 const express = require("express");
 const app = express();
 const expressLayouts = require("express-ejs-layouts");
-const { addContact, fetchContact, searchContact, duplicateCheck,  } = require("./utility/contacts.js");
-const { body, validationResult } = require("express-validator");
+const { addContact, fetchContact, searchContact, duplicateCheck, deleteContact, updateContacts } = require("./utility/contacts.js");
+const { body, validationResult, check } = require("express-validator");
 const host = "localhost";
 const port = 3001;
+const session = require('express-session');
+const cookieParser = require('cookie-parser');
+const flash = require('connect-flash');
 
 app.set("view engine", "ejs");
 
 app.use(expressLayouts);
 app.use(express.static("public"));
 app.use(express.urlencoded({ extended: false }));
+ 
+app.use(cookieParser('secret'));
+app.use(session ({
+    cookie: {maxAge: 6000},
+    secret: 'secret',
+    resave: true,
+    saveUninitialized: true,
+})
+);
 
+app.use(flash());
 
 app.get("/", (req, res) => {
   res.render("index", {
@@ -56,6 +69,16 @@ app.get("/contact/add", (req, res) => {
   });
 });
 
+app.get('/contact/update/:nama', (req, res) => {
+  const contact = searchContact(req.params.nama);
+
+  res.render('edit-contact', {
+      title: 'Form Edit Data Contact',
+      layout: 'layout/core-layout',
+      contact
+  })
+})
+
 app.post(
   "/contact",
   [
@@ -66,6 +89,8 @@ app.post(
       }
       return true;
     }),
+    check('email', 'Email Tidak Valid').notEmpty().isEmail(),
+    check("NomorTelpon", "Nomor Telp Tidak Valid").notEmpty().isMobilePhone("id-ID")
   ],
   (req, res) => {
     const errors = validationResult(req);
@@ -81,6 +106,45 @@ app.post(
     }
   }
 );
+
+app.get("/contact/delete/:nama", (req, res) => {
+  const contact = searchContact(req.params.nama);
+  if (!contact) {
+      res.status(404);
+      res.send("Data Tidak Ada")
+  } else {
+      deleteContact(req.params.nama);
+      req.flash("msg", "Data Contact Sudah Dihapus")
+      res.redirect("/contact");
+  }
+      
+})
+
+app.post("/contact/update", [
+  body("nama").custom((value, {req}) => { 
+      var duplikat = duplicateCheck(value);
+      if (value !== req.body.oldNama && duplikat) {
+          throw new Error("Nama Sudah Di Gunakan");
+      }
+      return true;
+  }),
+  check('email', 'Email Tidak Valid').notEmpty().isEmail(),
+  check("NomorTelpon", "Nomor Telp Tidak Valid").notEmpty().isMobilePhone("id-ID")
+], (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {        
+      res.render("edit-contact", {
+          title: "Form Edit Data Contact",
+          layout: "layout/core-layout",
+          errors: errors.array(),
+          contact: req.body,
+      });
+  } else {
+      updateContacts(req.body)
+      req.flash("msg", "Data Contact Berhasil Diubah")
+      res.redirect("/contact")
+  }
+})
 
 app.get("/contact/:nama", (req, res) => {
   const contact = searchContact(req.params.nama);

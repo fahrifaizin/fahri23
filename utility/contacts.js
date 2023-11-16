@@ -38,4 +38,21 @@ const duplicateCheck = (nama) => {
   return contacts.find((contact) => contact.nama === nama);
 };
 
-module.exports = { addContact, fetchContact, searchContact, duplicateCheck }; 
+const deleteContact = (nama) => {
+  const contacts = fetchContact();
+  const filterContacts = contacts.filter(
+      (contact) => contact.nama !== nama
+  );
+  saveContacts(filterContacts);
+}
+
+const updateContacts = (newContacts) => {
+  const contacts = fetchContact();
+  const filterContacts = contacts.filter(
+      (contact) => contact.nama !== newContacts.oldNama);
+  delete newContacts.oldNama;
+  filterContacts.push(newContacts);
+  saveContacts(filterContacts);
+}
+
+module.exports = { addContact, fetchContact, searchContact, duplicateCheck, deleteContact, updateContacts }; 

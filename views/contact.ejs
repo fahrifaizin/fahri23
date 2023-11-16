@@ -12,6 +12,7 @@
               <th scope="col">Nomor</th>
               <th scope="col">Nama</th>
               <th scope="col">Nomor Telpon</th>
+              <th scope="col">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -29,6 +30,10 @@
               <td>
                 <a href="/contact/<%= contact.nama %>"class="btn btn-success badge rounded-pill">
                   <i class="bi bil-info-circle"></i>detail</a>
+                <a href="/contact/delete/<%= contact.nama %>"class="btn btn-danger badge rounded-pill">
+                  <i class="bi bil-info-circle"></i>Delete</a>
+                <a href="/contact/update/<%= contact.nama %>"class="btn btn-warning badge rounded-pill">
+                  <i class="bi bil-info-circle"></i>Ubah</a>
               </td>
             </tr>
             <% })} %>
